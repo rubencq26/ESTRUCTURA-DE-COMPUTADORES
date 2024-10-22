@@ -26,8 +26,8 @@ Desarrollar un programa en ensamblador del 8086 que a partir de una cadena numé
     sub cadena[4],48
     sub cadena[5],48
     
-    mov al,0
-    mov bl,cadena[5]
+    mov al,0          ;operamos para calcular los valores en binario natural
+    mov bl,cadena[5]  ;multiplicamos cada bit positivo por su peso y los sumamos
     add al,bl
     mul peso[3]
     mov bl, al
@@ -39,15 +39,15 @@ Desarrollar un programa en ensamblador del 8086 que a partir de una cadena numé
     add bl, al
     mov al, cadena[2]
     mul peso[0]
-    add al,bl
+    add al,bl         ;resultado en AL
     
     mov dh, al;guardamos el valor de al para luego
     
-    mov bl,10
+    mov bl,10  ;dividimos entre 10 para sacar los dos digitos
     div bl
     mov cl, al ;guardamos el cociente     
     add cl,48
-    mov ch, ah ; guardamos el resto  
+    mov ch, ah ;guardamos el resto  
     add ch,48
     
     mov al, 03h;inicializacion segmento extra
@@ -56,22 +56,41 @@ Desarrollar un programa en ensamblador del 8086 que a partir de una cadena numé
     
     mov ax, 0B800h
     mov es,ax
-    mov dl, 0 ; inicializacion registro indexacion
+    mov dl, 0 ;inicializacion registro indexacion
     mov ah, 00001111b ;formato del caracter
-    mov al, cl; //caracter a escribir
+    mov al, cl;caracter a escribir
     mov es:[DI],AX ;escritura del caracter
-    mov al, ch; ;caracter a escribir
+    mov al, ch ;caracter a escribir
     mov es: [DI+2], ax; escritura del carácter
 
-    mov ah, 00h
+    mov ah, 00h ;pausamos el programa hasta recibir intro
     int 16h
     
     cmp cadena[2],0 ;comparamos el bit de mayor peso para saber si es negativo o positivo
     je pos
-    jne nega
+    jne nega ;ruptura de secuencia condicional
 
-pos:  
-    jmp fin
+pos:    
+
+    mov al, 03h;inicializacion segmento extra
+    mov ah, 00h
+    int 10h
+    
+    mov ax, 0B800h
+    mov es,ax
+    mov dl, 0 ; inicializacion registro indexacion
+    mov ah, 00001111b ;formato del caracter 
+    mov al, 43 ; signo mas en ascii
+    mov es:[DI], AX
+    mov al, cl ; carcter a escribir
+    mov es:[DI + 2], ax ; escritura del caracter
+    mov al, ch ; caracter a escribir
+    mov es:[DI + 4], ax; escritura del caracter
+
+    mov ah, 00h
+    int 16h    ;pausamos el programa hasta recibir intro
+    
+    jmp fin ;ruptura de secuencia incondicional
     
 nega:
     ; Calcular complemento a uno  
@@ -91,16 +110,17 @@ nega:
 
     mov ax, 0B800h
     mov es, ax
-    mov dl, 0 ; inicialización registro indexación
-    mov ah, 00001111b ; formato del carácter
+    mov dl, 0 ; inicializacion registro indexacion
+    mov ah, 00001111b ; formato del caracter
     mov al, 45 ; signo menos en ascii
     mov es:[DI], AX
-    mov al, ch; carcter a escribir
+    mov al, ch; caracter a escribir
     mov es:[DI + 2], ax ; escritura del caracter
     mov al, bl ; caracter a escribir
     mov es:[DI + 4], ax; escritura del caracter
     
-
+    mov ah, 00h
+    int 16h    ;pausamos el programa hasta recibir intro
   
     fin:
         mov ah, 4ch
