@@ -82,10 +82,8 @@ pos:
     mov ah, 00001111b ;formato del caracter 
     mov al, 43 ; signo mas en ascii
     mov es:[DI], AX
-    mov al, cl ; carcter a escribir
-    mov es:[DI + 2], ax ; escritura del caracter
     mov al, ch ; caracter a escribir
-    mov es:[DI + 4], ax; escritura del caracter
+    mov es:[DI + 2], ax; escritura del caracter
 
     mov ah, 00h
     int 16h    ;pausamos el programa hasta recibir intro
@@ -114,10 +112,8 @@ nega:
     mov ah, 00001111b ; formato del caracter
     mov al, 45 ; signo menos en ascii
     mov es:[DI], AX
-    mov al, ch; caracter a escribir
-    mov es:[DI + 2], ax ; escritura del caracter
     mov al, bl ; caracter a escribir
-    mov es:[DI + 4], ax; escritura del caracter
+    mov es:[DI + 2], ax; escritura del caracter
     
     mov ah, 00h
     int 16h    ;pausamos el programa hasta recibir intro
